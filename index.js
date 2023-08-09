@@ -9,8 +9,20 @@ app.use((request, response, next) => {
   next();
 });
 
-const requestHandler = (request, response, next) => {
+const nestedFn = () => {
+  setTimeout(() => {
+    const reqContext = log.getRequestContext();
+    console.log(`requestId nest fn`, reqContext.requestId);
+  }, 1000);
+};
+const requestHandler = async (request, response, next) => {
   const reqContext = log.getRequestContext();
+  console.log(`requestId`, reqContext.requestId);
+  setTimeout(() => {
+    const reqContext = log.getRequestContext();
+    console.log(`requestId sleep`, reqContext.requestId);
+    nestedFn();
+  }, 1000);
   response.json(reqContext);
   next();
 };
